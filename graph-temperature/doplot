@@ -1,0 +1,7 @@
+#!/usr/bin/gnuplot
+set title "CPU temp with Load "
+set xlabel "X"
+set ylabel "Y"
+plot "/var/graph-temp/info_brut.txt" title "" with lines
+pause -1 "Hit any key to continue"
+
