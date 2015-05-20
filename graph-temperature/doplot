@@ -2,6 +2,8 @@
 set title "CPU temp with Load "
 set xlabel "X"
 set ylabel "Y"
-plot "/var/graph-temp/info_brut.txt" title "" with lines
+plot "/var/graph-temp/info_brut.txt" using 2 title 'CPU temp' with lines, \
+     "/var/graph-temp/info_brut.txt" using 3 title 'Other temp' with lines, \
+     "/var/graph-temp/info_brut.txt" using 4 title 'Load' with lines
 pause -1 "Hit any key to continue"
 
