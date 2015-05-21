@@ -18,7 +18,7 @@ DIR_GRAPH=/var/graph-temp
 FILE_DATA=info_brut.txt
 
 DEFAULT_INTERVAL=60 # 60 seconde
-DEFAULT_OCCURENCE=10 # 10 occurence
+DEFAULT_OCCURENCE=120 # 10 occurence
 ########
 # MAIN #
 ########
