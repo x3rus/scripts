@@ -3,9 +3,9 @@ set title "CPU temp with Load "
 set xlabel "X"
 set ylabel "Y"
 set terminal png size 800,600
-set output "output.jpg"
+set output "output.png"
 plot "/var/graph-temp/info_brut-2015-05-20.txt" using 2 title 'CPU temp' with lines, \
      "/var/graph-temp/info_brut-2015-05-20.txt" using 3 title 'Other temp' with lines, \
-     "/var/graph-temp/info_brut-2015-05-20.txt" using 4 title 'Fan RPMS (/100)' with lines
-     "/var/graph-temp/info_brut-2015-05-20.txt" using 5 title 'Load' with lines
+     "/var/graph-temp/info_brut-2015-05-20.txt" using 4 title 'Fan RPMS (/100)' with lines, \
+     "/var/graph-temp/info_brut-2015-05-20.txt" using 5 title 'Load (*100)' with lines
 
