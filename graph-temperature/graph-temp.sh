@@ -21,11 +21,17 @@ FILE_GRAPH=temp_graph-$CUR_DATE.png
 DEFAULT_INTERVAL=60 # 60 seconde
 DEFAULT_OCCURENCE=10 # 10 occurence
 
+# Graph information
+GRAPH_TITLE="CPU temp, Other temp, Load average, RPMS Fan"
+GRAPH_X_LABEL="Time earch $INTERVAL secs" 
+GRAPH_Y_LABEL="Y"
+GRAPH_PNG_SIZE="800,600"
 ############
 # Funtions #
 ############
 
 f_usage () {
+    # Show help message
     echo "  usage : $0 [-c num] [-i num] [-d dir_path] [-b brut_file] [-o png_filename] "
     echo " "
     echo " Script to extract information from sensors and create a graph with GNUPlot"
@@ -44,6 +50,26 @@ f_usage () {
     echo '  All files are store in the dir_path '
 
 } # end f_usage
+
+f_do_graph () {
+    # Output graph 
+    gnuplot <<- EOF
+            set title "${GRAPH_TITLE}"
+            set xlabel "${GRAPH_X_LABEL}"
+            set ylabel "${GRAPH_Y_LABEL}"
+            set terminal png size ${GRAPH_PNG_SIZE}
+            set output "${DIR_GRAPH}/${FILE_GRAPH}"
+            plot "${DIR_GRAPH}/${FILE_DATA}" using 2 title 'CPU temp' with lines, \
+                 "${DIR_GRAPH}/${FILE_DATA}" using 3 title 'Other temp' with lines, \
+                 "${DIR_GRAPH}/${FILE_DATA}" using 4 title 'Fan RPMS (/100)' with lines, \
+                 "${DIR_GRAPH}/${FILE_DATA}" using 5 title 'Load (*100)' with lines
+EOF
+
+    if [ $? -ne 0 ] ; then
+        echo "ERROR: An error occur when the script create the graph ${DIR_GRAPH/$FILE_GRAPH} "
+        echo "ERROR: I hope raw data is ok ... please check "
+    fi
+} # end f_do_graph
 
 ########
 # MAIN #
@@ -130,5 +156,6 @@ done
 
 # TODO : appeler le script GNUplot pour la realisation du graphique avec les argumens
 #        http://stackoverflow.com/questions/12328603/how-to-pass-command-line-argument-to-gnuplot
+f_do_graph
 
 
