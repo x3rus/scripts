@@ -26,6 +26,7 @@ GRAPH_TITLE="CPU temp, Other temp, Load average, RPMS Fan"
 GRAPH_X_LABEL="Time earch $INTERVAL secs" 
 GRAPH_Y_LABEL="Y"
 GRAPH_PNG_SIZE="800,600"
+
 ############
 # Funtions #
 ############
@@ -52,23 +53,31 @@ f_usage () {
 } # end f_usage
 
 f_do_graph () {
-    # Output graph 
-    gnuplot <<- EOF
-            set title "${GRAPH_TITLE}"
-            set xlabel "${GRAPH_X_LABEL}"
-            set ylabel "${GRAPH_Y_LABEL}"
-            set terminal png size ${GRAPH_PNG_SIZE}
-            set output "${DIR_GRAPH}/${FILE_GRAPH}"
-            plot "${DIR_GRAPH}/${FILE_DATA}" using 2 title 'CPU temp' with lines, \
-                 "${DIR_GRAPH}/${FILE_DATA}" using 3 title 'Other temp' with lines, \
-                 "${DIR_GRAPH}/${FILE_DATA}" using 4 title 'Fan RPMS (/100)' with lines, \
-                 "${DIR_GRAPH}/${FILE_DATA}" using 5 title 'Load (*100)' with lines
+
+    # Check if we have some data to perform the graph
+    if [ -s ${DIR_GRAPH}/${FILE_DATA} ]; then
+        # Output graph 
+        gnuplot <<- EOF
+                set title "${GRAPH_TITLE} \n ${CUR_DATE}"
+                set xlabel "${GRAPH_X_LABEL}"
+                set ylabel "${GRAPH_Y_LABEL}"
+                set terminal png size ${GRAPH_PNG_SIZE}
+                set output "${DIR_GRAPH}/${FILE_GRAPH}"
+                plot "${DIR_GRAPH}/${FILE_DATA}" using 2 title 'CPU temp' with lines, \
+                     "${DIR_GRAPH}/${FILE_DATA}" using 3 title 'Other temp' with lines, \
+                     "${DIR_GRAPH}/${FILE_DATA}" using 4 title 'Fan RPMS (/100)' with lines, \
+                     "${DIR_GRAPH}/${FILE_DATA}" using 5 title 'Load (*100)' with lines
 EOF
 
-    if [ $? -ne 0 ] ; then
-        echo "ERROR: An error occur when the script create the graph ${DIR_GRAPH/$FILE_GRAPH} "
-        echo "ERROR: I hope raw data is ok ... please check "
-    fi
+        if [ $? -ne 0 ] ; then
+            echo "ERROR: An error occur when the script create the graph ${DIR_GRAPH/$FILE_GRAPH} "
+            echo "ERROR: I hope raw data is ok ... please check "
+        fi # End validation return code gnuplot
+
+    fi # End if [ -s ${DIR_GRAPH}/${FILE_DATA} ]
+
+    exit
+
 } # end f_do_graph
 
 ########
@@ -130,6 +139,12 @@ if ! [ -w $DIR_GRAPH ]; then
     exit 1
 fi
 
+
+# Trap Signal sent to the script If the user press CTRL+C the script will
+# create the final graph , it's useful when you run it infinitly with option -c 0
+# Ref: http://tldp.org/LDP/Bash-Beginners-Guide/html/sect_12_02.html
+trap f_do_graph SIGHUP SIGINT SIGTERM
+
 # Loop , I use while true , because if you set the option the OCCURENCE to 0
 # the graph will loop infinitly
 ITERATOR=1
@@ -154,8 +169,7 @@ while (true) ; do
     sleep $INTERVAL
 done
 
-# TODO : appeler le script GNUplot pour la realisation du graphique avec les argumens
-#        http://stackoverflow.com/questions/12328603/how-to-pass-command-line-argument-to-gnuplot
+# Create graph 
 f_do_graph
 
 
