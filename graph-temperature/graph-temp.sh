@@ -1,9 +1,17 @@
 #!/bin/bash
 #
 # Description : 
-#   Permet de grapher la temperature du système en relation le load de la 
-#   la machine le temps d'utilisation et p-e plus :P
-# 
+#   FR:
+#       Collecte la température du CPU, Other (?), le load de la machine 
+#       multiplié par 100, la vitesse de la Fan du CPU diviser par 100
+#       Je fais ces opérations mathématique pour l'information soit mieux
+#       représenter dans le graph sans trop de différence d'échelle
+#       le script peut etre executé avec un nombre d'itération connu ou
+#       de manière infinie. Les signaux sont trappé donc si l'utilisateur
+#       fait CTRL+C ou envoie la commande kill le script réalise le graphe
+#       avant de quitter
+#   EN:
+#       TODO : mettre la description en anglais 
 # Auteur : Thomas Boutry
 # Licence : GPL v3.
 #
@@ -132,10 +140,9 @@ while getopts :c:i:d:b:o:h FLAG; do
     esac # end case opts
 done # End while getopts
 
-# TODO : Ajouter de la validation sur les arguments
-# Validation presence du rep
+# Check if directory is ok
 if ! [ -w $DIR_GRAPH ]; then
-    echo "ERROR: Répertoire $DIR_GRAPH n'existe pas  ou ne peut pas être ecrit"
+    echo "ERROR: Directory $DIR_GRAPH don't existe or not writable"
     exit 1
 fi
 
