@@ -12,13 +12,14 @@
 #############
 # Variables #
 #############
-CUR_DATE=$(date +%F)
+CUR_DATE=$(date +%F-%H-%M)
 FILE_GRAPH=temp-$CUR_DATE
-DIR_GRAPH=/var/graph-temp
-FILE_DATA=info_brut.txt
+DIR_GRAPH=$HOME/temp_graph
+FILE_DATA=raw_temp_graph-$CUR_DATE
+FILE_GRAPH=temp_graph-$CUR_DATE.png
 
 DEFAULT_INTERVAL=60 # 60 seconde
-DEFAULT_OCCURENCE=120 # 10 occurence
+DEFAULT_OCCURENCE=10 # 10 occurence
 
 ############
 # Funtions #
@@ -34,10 +35,12 @@ f_usage () {
     echo " "
     echo " Options: "
     echo "      -c num : Number of data extraction. (DEFAULT : 10)"
+    echo "               Use 0 for unlimited "
     echo "      -i num : The delay between updates in seconds. (DEFAULT : 60 sec)"
     echo '      -d dir_path : Directory use to store temporary file and png graphe (DEFAULT : $HOME/temp_graph'
     echo '      -b brut_file: Filename to store information (DEFAULT : raw_temp_graph-$DATE)'
     echo '      -o png_file: Filename generate by GNUPlot (DEFAULT : temp_graph-$DATE.png)'
+    echo '      -h : Show this message'
     echo '  All files are store in the dir_path '
 
 } # end f_usage
@@ -46,30 +49,86 @@ f_usage () {
 # MAIN #
 ########
 
+# Set Default Value
+OCCURENCE=$DEFAULT_OCCURENCE
+INTERVAL=$DEFAULT_INTERVAL
+
+####################
+# script arguments #
+
+while getopts :c:i:d:b:o:h FLAG; do
+    case $FLAG in
+        c)  # set number of data extraction
+            if [ $OPTARG -ge 0 ] ; then
+                OCCURENCE=$OPTARG
+            else
+                echo "ERROR: argument error you must give an interger"
+                f_usage
+                exit 1
+            fi
+            ;;
+        i)  # set time between each occurence  
+            if [ $OPTARG -ge 0 ] ; then
+                INTERVAL=$OPTARG
+            else
+                echo "ERROR: argument error you must give an interger"
+                f_usage
+                exit 1
+            fi
+            ;;
+        d)  # set directory where file are located
+            DIR_GRAPH=$OPTARG
+            ;;
+        b)  # set raw data file name
+            FILE_DATA=$OPTARG
+            ;;
+        o)  # set graph file name
+            FILE_GRAPH=$OPTARG
+            ;;
+        h)  # show help message
+            f_usage
+            exit 1
+            ;;
+        \?) #unrecognized option - show help
+            echo "ERROR: option used not reconized , please read usage "
+            f_usage
+            exit 1
+            ;;
+    esac # end case opts
+done # End while getopts
+
+# TODO : Ajouter de la validation sur les arguments
 # Validation presence du rep
 if ! [ -w $DIR_GRAPH ]; then
     echo "ERROR: Répertoire $DIR_GRAPH n'existe pas  ou ne peut pas être ecrit"
     exit 1
 fi
 
-
-# Recuperation des arguments ...
-# TODO : Prendre en charge les argument pour l'interval et l'occurence , p-e rep et fichier
-OCCURENCE=$DEFAULT_OCCURENCE
-INTERVAL=$DEFAULT_INTERVAL
-
-
-for N in $(seq 1 $OCCURENCE) ; do
-    # Recuperation des valeurs
-    # TODO : peut-etre mettre dans le graphe la vitesse de la FAN 
+# Loop , I use while true , because if you set the option the OCCURENCE to 0
+# the graph will loop infinitly
+ITERATOR=1
+while (true) ; do
+    # Extract data from sensors, maybe for other system change this part
     TEMPS_CPU_OTHER=$(sensors | egrep 'CPU|Other' | cut -d "+" -f 2 | cut -d "." -f 1 | tr "\n" " ")
     CUR_LOAD_100=$(uptime | tr -s " "  | cut -d " " -f 10 | tr -d "." | tr -d ",")
-    # Vitesse de la fan / 100
+    # RPM fan / 100
     FAN_RPMS=$(( $(sensors | grep Fan | cut -d " " -f 3) / 100 ))
 
-    # Ecriture dans le fichier
-    echo "$N $TEMPS_CPU_OTHER $FAN_RPMS $CUR_LOAD_100" >> $DIR_GRAPH/$FILE_DATA
+    # Write to data file
+    echo "$ITERATOR $TEMPS_CPU_OTHER $FAN_RPMS $CUR_LOAD_100" >> $DIR_GRAPH/$FILE_DATA
+
+
+    if [ $OCCURENCE -gt 0  -a $ITERATOR -ge $OCCURENCE ]; then
+        break
+    else
+        # Increase iterator
+        ITERATOR=$(( $ITERATOR + 1 ))
+    fi
+
     sleep $INTERVAL
 done
+
+# TODO : appeler le script GNUplot pour la realisation du graphique avec les argumens
+#        http://stackoverflow.com/questions/12328603/how-to-pass-command-line-argument-to-gnuplot
 
 
