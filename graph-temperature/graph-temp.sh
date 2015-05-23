@@ -150,6 +150,8 @@ fi
 # Trap Signal sent to the script If the user press CTRL+C the script will
 # create the final graph , it's useful when you run it infinitly with option -c 0
 # Ref: http://tldp.org/LDP/Bash-Beginners-Guide/html/sect_12_02.html
+# TODO : Voir pour ajouter d'autre signaux car si on demarre le script et que
+#        je ferme ma session X11 je n'ai pas la génération du graph
 trap f_do_graph SIGHUP SIGINT SIGTERM
 
 # Loop , I use while true , because if you set the option the OCCURENCE to 0
