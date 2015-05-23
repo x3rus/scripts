@@ -152,7 +152,7 @@ fi
 # Ref: http://tldp.org/LDP/Bash-Beginners-Guide/html/sect_12_02.html
 # TODO : Voir pour ajouter d'autre signaux car si on demarre le script et que
 #        je ferme ma session X11 je n'ai pas la génération du graph
-trap f_do_graph SIGHUP SIGINT SIGTERM
+trap f_do_graph SIGHUP SIGINT SIGTERM SIGKILL
 
 # Loop , I use while true , because if you set the option the OCCURENCE to 0
 # the graph will loop infinitly
