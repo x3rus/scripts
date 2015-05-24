@@ -11,7 +11,17 @@
 #       fait CTRL+C ou envoie la commande kill le script réalise le graphe
 #       avant de quitter
 #   EN:
-#       TODO : mettre la description en anglais 
+#       Extract  CPU temperature, Other temperature, the load average 
+#       (value *100) , the RPM fan ( value / 100) . You can specifie how
+#       many time the script will run, or run the script with infinie loop
+#       with option (-c 0). The script trap signal, so when it recieve CTRL+C
+#       or SIGTERM the graph will be created.
+#       
+#       
+# Tested on :
+#   OS: GNU/Linux ->  ArchLinux
+#   kernel module : i8k (Driver for accessing SMM BIOS on Dell laptops)
+#
 # Auteur : Thomas Boutry
 # Licence : GPL v3.
 #
@@ -150,7 +160,6 @@ fi
 # Trap Signal sent to the script If the user press CTRL+C the script will
 # create the final graph , it's useful when you run it infinitly with option -c 0
 # Ref: http://tldp.org/LDP/Bash-Beginners-Guide/html/sect_12_02.html
-# TODO : Voir pour ajouter d'autre signaux car si on demarre le script et que
 #        je ferme ma session X11 je n'ai pas la génération du graph
 trap f_do_graph SIGHUP SIGINT SIGTERM SIGKILL
 
