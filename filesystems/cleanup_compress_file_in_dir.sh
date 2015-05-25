@@ -15,7 +15,7 @@
 # Variables #
 #############
 
-LOCK_FILE=/var/lock/$(basename $0).lock     # Fichier lock pour ne pas avoir 2 
+LOCK_FILE=/tmp/$(basename $0).lock     # Fichier lock pour ne pas avoir 2 
                                             # script qui roule en meme temps
 
 MAX_FILES_AGE=60 			                # nombre en jours de conservation 
