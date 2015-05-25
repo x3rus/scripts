@@ -1,27 +1,35 @@
 #!/bin/bash
 #
-# Description : Compresse et supprime des fichiers dans un repertoire fournie en parametre
-#		La rotation peut etre recursive sur plusieurs niveau , ceci est parametrable.
-#		L'age des fichiers a supprimer est passable en parametre ainsi que le 
-#		nombre de fichier a ne pas compresser.
+#   Description : Compresse et supprime des fichiers dans un repertoire fournie
+#               en parametre. La rotation peut etre recursive sur plusieurs 
+#               niveau , ceci est parametrable. L'age des fichiers a 
+#               supprimer est passable en parametre ainsi que le nombre de 
+#               fichier a ne pas compresser.
 #
-# Auteur : Boutry Thomas <thomas.boutry@x3rus.com>
+#   Auteur : Boutry Thomas <thomas.boutry@x3rus.com>
+#   Licence : GPL v3 
 #
-# TODO :
-#####################################################################################################################################
+###############################################################################
 
 #############
 # Variables #
 #############
 
-LOCK_FILE=/var/lock/$(basename $0).lock 		    # Fichier lock pour ne pas avoir 2 script qui roule en meme temps
+LOCK_FILE=/var/lock/$(basename $0).lock     # Fichier lock pour ne pas avoir 2 
+                                            # script qui roule en meme temps
 
-MAX_FILES_AGE=60 			    # nombre en jours de conservation des fichiers
-NUM_FILE_NOT_COMPRESSE=2		    # nombre de jours des fichiers nom compressé, le système va don
-					    # a conserver X jour sans compresse le fichier
-PATH_DIR_HOST=""			    # Path racine ou les répertoires des systèmes sont stocké
-MAX_DEPTH="" 				    # Profondeur de traitement des fichiers dans le répertoire donnee
-PATERN_FILE="*.log" 			    # Pattern pour le traitement des fichiers qui seront manipuler.
+MAX_FILES_AGE=60 			                # nombre en jours de conservation 
+                                            # des fichiers
+NUM_FILE_NOT_COMPRESSE=2		            # nombre de jours des fichiers nom
+                                            # compressé, le système va donc
+					                        # conserver X jour sans compresse 
+                                            # le fichier
+PATH_DIR_HOST=""			                # Path racine ou les répertoires 
+                                            # des systèmes sont stocké
+MAX_DEPTH="" 				                # Profondeur de traitement des 
+                                            # fichiers dans le répertoire donnee
+PATERN_FILE="*.log" 			            # Pattern pour le traitement des 
+                                            # fichiers qui seront manipuler.
 
 #############
 # Functions #
@@ -40,7 +48,7 @@ f_rotate_logs_file ()  {
 	# recuperation de l'argument
 	REP_TO_ROTATE=$1
 
-	# une double validation ca fait pas de mal.
+	# une double validation ca ne fait pas de mal.
 	if ! [ -d $REP_TO_ROTATE ]; then
 		echo "ERROR : $REP_TO_ROTATE not a directory, unable to rotate files"
 		return 1
@@ -50,8 +58,9 @@ f_rotate_logs_file ()  {
 		EXTRA_ARG="$EXTRA_ARG -maxdepth $MAX_DEPTH"
 	fi
 
-	# recuperation de la listes des vieux fichiers plus vieux de $MAX_FILES_AGE et suppression
-	# encore une validation que le fichier est une fichier régulier et qu'il a l'extention .log.
+	# recuperation de la listes des vieux fichiers plus vieux de $MAX_FILES_AGE 
+    # et suppression encore une validation que le fichier est une fichier 
+    # régulier et qu'il a l'extention .log.
 	find $REP_TO_ROTATE $EXTRA_ARG -type f -name "$PATERN_FILE" -ctime +$MAX_FILES_AGE -exec rm {} \; 
 	# Compression des fichiers tous en conservant les plus recent non-compresser.
 	find $REP_TO_ROTATE $EXTRA_ARG -type f -name "$PATERN_FILE" -mtime +$NUM_FILE_NOT_COMPRESSE -exec gzip {} \; 
@@ -97,46 +106,46 @@ while getopts "hd:k:u:r:p:" optname; do
         ;;
       "k")
         # Validation de la variable que c'est uniquement un chiffre http://mywiki.wooledge.org/BashFAQ/054
-	if [[ ${OPTARG} != *[!0-9]* ]]; then
-		MAX_FILES_AGE=${OPTARG}
-	else
-		echo "ERROR : -k variable must be a number "
-		echo "$0 -h  , for more information "
-		exit 1
-	fi
+    	if [[ ${OPTARG} != *[!0-9]* ]]; then
+	    	MAX_FILES_AGE=${OPTARG}
+	    else
+		    echo "ERROR : -k variable must be a number "
+    		echo "$0 -h  , for more information "
+	    	exit 1
+	    fi
         ;;
       "u")
         # Validation de la variable que c'est uniquement un chiffre http://mywiki.wooledge.org/BashFAQ/054
-	if [[ ${OPTARG} != *[!0-9]* ]]; then
-		NUM_FILE_NOT_COMPRESSE=${OPTARG}
-	else
-		echo "ERROR : -u variable must be a number "
-		echo "$0 -h  , for more information "
-		exit 1
-	fi
+	    if [[ ${OPTARG} != *[!0-9]* ]]; then
+		    NUM_FILE_NOT_COMPRESSE=${OPTARG}
+    	else
+	    	echo "ERROR : -u variable must be a number "
+		    echo "$0 -h  , for more information "
+    		exit 1
+	    fi
         ;;
       "r")
         # Validation de la variable que c'est uniquement un chiffre http://mywiki.wooledge.org/BashFAQ/054
-	if [[ ${OPTARG} != *[!0-9]* ]]; then
-		MAX_DEPTH=${OPTARG}
-	else
-		echo "ERROR : -r variable must be a number "
-		echo "$0 -h  , for more information "
-		exit 1
-	fi
+    	if [[ ${OPTARG} != *[!0-9]* ]]; then
+	    	MAX_DEPTH=${OPTARG}
+    	else
+	    	echo "ERROR : -r variable must be a number "
+		    echo "$0 -h  , for more information "
+    		exit 1
+    	fi
         ;;
       "p")
 		PATERN_FILE=${OPTARG}
         ;;
       "h")
         f_usage
-	exit 0
+	    exit 0
         ;;
       *)
-      # Should not occur
+        # Should not occur
         echo " Error with Argument " 
-	f_usage
-	exit 1
+    	f_usage
+	    exit 1
         ;;
     esac
 done
