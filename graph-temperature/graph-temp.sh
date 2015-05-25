@@ -33,7 +33,7 @@
 CUR_DATE=$(date +%F-%H-%M)
 FILE_GRAPH=temp-$CUR_DATE
 DIR_GRAPH=$HOME/temp_graph
-FILE_DATA=raw_temp_graph-$CUR_DATE
+FILE_DATA=temp_graph-$CUR_DATE.raw
 FILE_GRAPH=temp_graph-$CUR_DATE.png
 
 DEFAULT_INTERVAL=60 # 60 seconde
