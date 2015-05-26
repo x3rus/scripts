@@ -10,6 +10,11 @@ Ces scripts envoie aussi un courriel de résultat du backup à l'administrateur.
   sudo apt-get install rsnapshot
   sudo apt-get install rrdtool
 
+# Pour Arch Linux:
+  sudo pacman -S rsnapshot
+  sudo pacman -S rsync
+  sudo pacman -S rrdtool
+
 # Création des répertoires (root:root)
   # Configuration
 	sudo mkdir /etc/rsnapshot/hosts
@@ -30,7 +35,7 @@ Ces scripts envoie aussi un courriel de résultat du backup à l'administrateur.
 	sudo cp backup_runner.sh FullBackup.sh html-email-sender.py rsnapreport.pl /usr/local/sysadmin/backup/    
 	
 
-# Modifier les variables dans le script FullBackup.sh
+# Modifier les variables dans le script FullBackup.conf
 
 
 # Création du fichier de configuration [ATTENTION PAS D'ESPACE mais des TABULATIONS]

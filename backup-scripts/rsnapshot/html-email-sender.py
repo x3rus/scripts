@@ -60,7 +60,7 @@ from email.MIMEImage import MIMEImage
 ####################
 
 def cmdUsage():
-            print """
+            print ("""
             Usage: STDIN | html-email-sender.py [OPTIONS]...
             
             Send E-MAIL in HTML format give the possibility to add images in the mail
@@ -77,7 +77,7 @@ def cmdUsage():
                 echo " <b> Title in BOLD </b> with this IMG : <br> <img src="cid:img1"><br>Nifty! " | ./html-email-sender.py -t you@example.com -f me@example.com -s "test script" -i "{'img1':'/tmp/toto.jpg'}"
 
             This will send an email with the img1 in the body of the mail , it's possible to add many images of course.
-            """
+            """)
 # END cmdUsage
 
 # Function to remove all html tags use a regex to perform the operation
@@ -104,9 +104,9 @@ strBody=""
 # print error message if invalide argument exist
 try:
     opts, args = getopt.getopt(sys.argv[1:], "vhs:t:f:i:", ["help", "to","from","subject", "images"])
-except getopt.GetoptError, err:
+except getopt.GetoptError as err:
     # Error Bad Arguments , print help information and exit:
-    print " \n" + str(err) # will print something like "option -a not recognized"
+    print (" \n" + str(err) ) # will print something like "option -a not recognized"
     cmdUsage()
     sys.exit(2)
 
@@ -122,8 +122,8 @@ for cmdOption , cmdArgument in opts:
         try:
             dicImages= ast.literal_eval(cmdArgument)
         except:
-            print "ERROR: Img Argument not OK , it must be something like : "
-            print "       -i \"{\'img1\':\'/tmp/toto.jpg\', \'img2\':\'/tmp/titi.jpg\'}\" "
+            print ("ERROR: Img Argument not OK , it must be something like : ")
+            print ("       -i \"{\'img1\':\'/tmp/toto.jpg\', \'img2\':\'/tmp/titi.jpg\'}\" ")
             cmdUsage()
             sys.exit(2)
     elif cmdOption in ("-v","--verbose"):
@@ -173,7 +173,7 @@ for strImgName , strImgPath in dicImages.items():
         msgImage.add_header('Content-ID', '<'+strImgName+'>')
         msgRoot.attach(msgImage)
     except:
-        print "ERROR: Unable to open file : " + strImgPath
+        print ("ERROR: Unable to open file : " + strImgPath)
 
 # Send the email (this example assumes SMTP authentication is required)
 import smtplib

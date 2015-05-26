@@ -24,6 +24,7 @@
 PERIOD=$1
 #CONF_FILE=/usr/local/sysadmin/backup/FullBackup.conf
 CONF_FILE=/home/xerus/git/scripts/backup-scripts/rsnapshot/FullBackup.conf
+
 # Load configuration file
 if [ -f $CONF_FILE ] ; then
     . $CONF_FILE
