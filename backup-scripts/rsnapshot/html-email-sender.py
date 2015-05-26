@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python2
 ##############################################################################
 #  Copyright 2010 Thomas Boutry <thomas.boutry@x3rus.com>
 #

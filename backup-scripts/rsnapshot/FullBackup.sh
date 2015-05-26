@@ -46,28 +46,38 @@ f_send_mail()
 	done
 } # f_send_mail
 
+f_cleanup(){
+    # Clean up temporary files 
+    if [ -f $TMPFILE_RSYNC_RUN ] ;then
+    	rm $TMPFILE_RSYNC_RUN
+    fi
+	if [ -f  $TMPFILE_RSYNC_REPPORT ] ; then
+    	rm $TMPFILE_RSYNC_REPPORT
+    fi
+	if [ -f $TMPFILE_RSYNC_FULL_REPPORT ]; then
+    	rm $TMPFILE_RSYNC_FULL_REPPORT
+    fi
+} # end f_cleanup
 
 ##############
 #### MAIN ####
 ##############
 
-echo ${PERIOD} | egrep 'hourly|daily|weekly|monthly' 2>&1 >/dev/null
-
-if [ $? -ne 0 ]; then
-        echo "ERROR: Bad period value. Available values are <hourly|daily|weekly|monthly>."
-	rm $TMPFILE_RSYNC_RUN
-	rm $TMPFILE_RSYNC_REPPORT
-	rm $TMPFILE_RSYNC_FULL_REPPORT
-        exit 1
+if ! echo ${PERIOD} | egrep -q 'hourly|daily|weekly|monthly' ; then
+    echo "ERROR: Bad period value. Available values are <hourly|daily|weekly|monthly>."
+    f_cleanup
+    exit 1
 fi
-
-# Start backup for each system listed in the $DIR_CONF_BK_FILE
 
 echo " " >> $TMPFILE_RSYNC_REPPORT
 echo " <b>Realisation du backup sur disques  : </b> <br> " >> $TMPFILE_RSYNC_REPPORT
 echo " <b> ------------------------------------ </b> <br> " >> $TMPFILE_RSYNC_REPPORT
 echo "<tt><pre>" >> $TMPFILE_RSYNC_REPPORT
 
+# trap exit to run Clean up function
+trap f_cleanup SIGHUP SIGINT SIGQUIT SIGABRT SIGKILL SIGALRM SIGTERM
+
+# Start backup for each system listed in the $DIR_CONF_BK_FILE
 TIMER_BK_all_host="$(date +%s)"
 for host in $DIR_CONF_BK_FILE/*.conf
 do
@@ -89,8 +99,6 @@ echo "<br>" >> $TMPFILE_RSYNC_REPPORT
 printf "<i>Backup of Hosts is realise in: %02d:%02d:%02d:%02d </i> \n" "$((TIMER_BK_all_host/86400))" "$((TIMER_BK_all_host/3600%24))" "$((TIMER_BK_all_host/60%60))" "$((TIMER_BK_all_host%60))" >> $TMPFILE_RSYNC_REPPORT
 echo "</pre></tt> <br>" >> $TMPFILE_RSYNC_REPPORT
 
-rm $TMPFILE_RSYNC_RUN
-
 # Update RRD Graphique
 if [ -f $RRDFILE ]; then
     TIMER_BK_all_host_MINS=$(($TIMER_BK_all_host/60%60))
@@ -111,8 +119,6 @@ fi
 
 # Feed Backup local in the FULL backup
 cat $TMPFILE_RSYNC_REPPORT >> $TMPFILE_RSYNC_FULL_REPPORT
-rm $TMPFILE_RSYNC_REPPORT
 
 
 f_send_mail
-rm $TMPFILE_RSYNC_FULL_REPPORT
