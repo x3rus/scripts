@@ -12,8 +12,8 @@
 # Date    : 2013-07-07
 # Licence : GPL v3
 #
-# TODO: 
-#	- Voir pour mettre du parallellisme des processus.
+# TODO (listes ameliorations pour le script)
+#	- Voir pour mettre du parallellisme des processus. 
 #	- Voir pour mieux générer le graphe .
 #	- Voir pour faire un rapport HTML plus beau 
 #############################################################
@@ -22,25 +22,16 @@
 ### Variables ###
 #################
 PERIOD=$1
-DIR_CONF_BK_FILE=/etc/rsnapshot/hosts
-BKRUNNER=/usr/local/sysadmin/backup/backup_runner.sh
-BKREPORT=/usr/local/sysadmin/backup/rsnapreport.pl
-RRDFILE=/var/lib/rrd/time_for_backup.rrd
-GRAPHFILE=/tmp/backuptime.png
-NUMDAY=`date +%u`
-D_DATE=`date +%F`
-
-# Mail Configuration 
-MAILADMINS="sysadmin_x3rus@x3rus.com"
-MAILFROM="root"
-MAILSUBJECT=" X3rus Backup $D_DATE : "
-MAILSUBJECT_STATUS=" Success"
-MAILAPP=/usr/local/sysadmin/backup/html-email-sender.py
-
-# File Temporaire
-TMPFILE_RSYNC_RUN=`mktemp`
-TMPFILE_RSYNC_REPPORT=`mktemp`
-TMPFILE_RSYNC_FULL_REPPORT=`mktemp`
+#CONF_FILE=/usr/local/sysadmin/backup/FullBackup.conf
+CONF_FILE=/home/xerus/git/scripts/backup-scripts/rsnapshot/FullBackup.conf
+# Load configuration file
+if [ -f $CONF_FILE ] ; then
+    . $CONF_FILE
+else
+    echo "ERROR: Configuration file don't exist please fix it "
+    echo "ERROR: Script look for the file $CONF_FILE "
+    exit 1
+fi
 
 
 ################
