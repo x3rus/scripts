@@ -1,0 +1,35 @@
+#!/bin/sh
+#
+# Command original from web site : http://troy.jdmz.net/rsync/#validate-rsync
+#
+
+
+case "$SSH_ORIGINAL_COMMAND" in
+*\&*)
+echo "Rejected"
+;;
+*\(*)
+echo "Rejected"
+;;
+*\{*)
+echo "Rejected"
+;;
+*\;*)
+echo "Rejected"
+;;
+*\<*)
+echo "Rejected"
+;;
+*\`*)
+echo "Rejected"
+;;
+*\|*)
+echo "Rejected"
+;;
+rsync\ --server*)
+$SSH_ORIGINAL_COMMAND
+;;
+*)
+echo "Rejected"
+;;
+esac 
