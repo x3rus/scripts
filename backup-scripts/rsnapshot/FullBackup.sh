@@ -57,6 +57,8 @@ f_cleanup(){
 	if [ -f $TMPFILE_RSYNC_FULL_REPPORT ]; then
     	rm $TMPFILE_RSYNC_FULL_REPPORT
     fi
+
+    exit
 } # end f_cleanup
 
 ##############
@@ -70,8 +72,8 @@ if ! echo ${PERIOD} | egrep -q 'hourly|daily|weekly|monthly' ; then
 fi
 
 echo " " >> $TMPFILE_RSYNC_REPPORT
-echo " <b>Realisation du backup sur disques  : </b> <br> " >> $TMPFILE_RSYNC_REPPORT
-echo " <b> ------------------------------------ </b> <br> " >> $TMPFILE_RSYNC_REPPORT
+echo " <b>$MSG_H1_TXT_BK_ON_HD  : </b> <br> " >> $TMPFILE_RSYNC_REPPORT
+echo " <b>$MSG_LINE </b> <br> " >> $TMPFILE_RSYNC_REPPORT
 echo "<tt><pre>" >> $TMPFILE_RSYNC_REPPORT
 
 # trap exit to run Clean up function
@@ -91,12 +93,12 @@ do
 		cat $RSNAPSHOT_ERROR_SYNC  >> $TMPFILE_RSYNC_REPPORT
 	fi 
 	TIMER_BK_host="$(($(date +%s)-TIMER_BK_host))"
-	printf "<i>Backup performed in: %02d:%02d:%02d:%02d </i> \n" "$((TIMER_BK_host/86400))" "$((TIMER_BK_host/3600%24))" "$((TIMER_BK_host/60%60))" "$((TIMER_BK_host%60))" >> $TMPFILE_RSYNC_REPPORT
+	printf "<i>$MSG_BK_PERFORME_IN:%02d:%02d:%02d:%02d </i> \n" "$((TIMER_BK_host/86400))" "$((TIMER_BK_host/3600%24))" "$((TIMER_BK_host/60%60))" "$((TIMER_BK_host%60))" >> $TMPFILE_RSYNC_REPPORT
 done
 
 TIMER_BK_all_host="$(($(date +%s)-TIMER_BK_all_host))"
 echo "<br>" >> $TMPFILE_RSYNC_REPPORT
-printf "<i>Backup of Hosts is realise in: %02d:%02d:%02d:%02d </i> \n" "$((TIMER_BK_all_host/86400))" "$((TIMER_BK_all_host/3600%24))" "$((TIMER_BK_all_host/60%60))" "$((TIMER_BK_all_host%60))" >> $TMPFILE_RSYNC_REPPORT
+printf "<i>$MSG_BK_HOST_PERFORME_IN: %02d:%02d:%02d:%02d </i> \n" "$((TIMER_BK_all_host/86400))" "$((TIMER_BK_all_host/3600%24))" "$((TIMER_BK_all_host/60%60))" "$((TIMER_BK_all_host%60))" >> $TMPFILE_RSYNC_REPPORT
 echo "</pre></tt> <br>" >> $TMPFILE_RSYNC_REPPORT
 
 # Update RRD Graphique
@@ -109,7 +111,7 @@ if [ -f $RRDFILE ]; then
     else
 	/usr/bin/rrdtool graph $GRAPHFILE --start -2w --vertical-label "Minutes"  --title "backup time"   DEF:TimeBackup=$RRDFILE:backupTime:LAST  LINE2:TimeBackup#FF0000 &>/dev/null
 	echo "<br> " >> $TMPFILE_RSYNC_REPPORT
-	echo " <b> Graphique Temps utiliser pour les backups </b> <br>  " >> $TMPFILE_RSYNC_REPPORT
+	echo " <b> $MSG_GRAPHIC_HEADER</b> <br>  " >> $TMPFILE_RSYNC_REPPORT
 	echo " <img src=\"cid:graph1\"> <br>  " >> $TMPFILE_RSYNC_REPPORT
     fi
 else
@@ -122,3 +124,4 @@ cat $TMPFILE_RSYNC_REPPORT >> $TMPFILE_RSYNC_FULL_REPPORT
 
 
 f_send_mail
+f_cleanup
