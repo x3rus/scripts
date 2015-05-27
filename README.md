@@ -7,6 +7,8 @@ Use few coding language like bash , python , perl ...
 Commentary are in franglais (mix of French and English) it's the consequence
 when you like in a country with both a official language :D. 
 
+Contribution are welcome :D.
+
 ## graph-temperature
 
 Graph Temp of your system , script use sensors and GNUPlot, it work out
