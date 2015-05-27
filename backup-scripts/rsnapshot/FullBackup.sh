@@ -101,11 +101,23 @@ echo "<br>" >> $TMPFILE_RSYNC_REPPORT
 printf "<i>$MSG_BK_HOST_PERFORME_IN: %02d:%02d:%02d:%02d </i> \n" "$((TIMER_BK_all_host/86400))" "$((TIMER_BK_all_host/3600%24))" "$((TIMER_BK_all_host/60%60))" "$((TIMER_BK_all_host%60))" >> $TMPFILE_RSYNC_REPPORT
 echo "</pre></tt> <br>" >> $TMPFILE_RSYNC_REPPORT
 
-# Update RRD Graphique
+# Check if the rrdfile exist try to create it #
+if [ ! -f $RRDFILE ]; then
+    /usr/bin/rrdtool create $RRDFILE --start $(date +%s) --step 86400 DS:backupTime:GAUGE:172800:0:1440 RRA:LAST:0.5:1:14
+
+    # Ajout d'une petite seconde afin de ne pas avoir l'erreur :
+    #  illegal attempt to update using time 1432727939 when last update time is 1432727939 (minimum one second step)
+    sleep 2 
+    if [ $? -ne 0 ] ; then
+        echo "ERROR: Unable to create the rrdfile"
+    fi
+fi
+
 if [ -f $RRDFILE ]; then
+# Update RRD Graphique
     TIMER_BK_all_host_MINS=$(($TIMER_BK_all_host/60%60))
     /usr/bin/rrdtool update $RRDFILE $(date +%s):$TIMER_BK_all_host_MINS 
-    echo "/usr/bin/rrdtool update $RRDFILE $(date +%s):$TIMER_BK_all_host_MINS" >> /tmp/rrdtool-cmd
+    echo "/usr/bin/rrdtool update $RRDFILE $(date +%s --date='1 day ago'):$TIMER_BK_all_host_MINS" >> /tmp/rrdtool-cmd
     if [ $? -ne 0 ]; then
 	    echo "ERROR : When system try to update the rrd file <br>  " >> $TMPFILE_RSYNC_REPPORT
     else
