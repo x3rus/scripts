@@ -12,10 +12,6 @@
 # Date    : 2013-07-07
 # Licence : GPL v3
 #
-# TODO (listes ameliorations pour le script)
-#	- Voir pour mettre du parallellisme des processus. 
-#	- Voir pour mieux générer le graphe .
-#	- Voir pour faire un rapport HTML plus beau 
 #############################################################
 
 #################
@@ -79,6 +75,7 @@ echo "<tt><pre>" >> $TMPFILE_RSYNC_REPPORT
 # trap exit to run Clean up function
 trap f_cleanup SIGHUP SIGINT SIGQUIT SIGABRT SIGKILL SIGALRM SIGTERM
 
+# TODO Voir pour faire du parallelisme pour uptimiser le temps de backup
 # Start backup for each system listed in the $DIR_CONF_BK_FILE
 TIMER_BK_all_host="$(date +%s)"
 for host in $DIR_CONF_BK_FILE/*.conf
@@ -113,6 +110,8 @@ if [ ! -f $RRDFILE ]; then
     fi
 fi
 
+# TODO Voir pour faire le graphique avec gnuplot
+#      l'idee serai d'avoir plus de graphe par host p-e par repertoire sur une longue periode
 if [ -f $RRDFILE ]; then
 # Update RRD Graphique
     TIMER_BK_all_host_MINS=$(($TIMER_BK_all_host/60%60))

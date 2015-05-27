@@ -16,7 +16,7 @@ export PATH
 
 if [ $# -ne 2 ]; then
         echo "Usage: $0 <configuration_file> <hourly|daily|weekly|monthly>"
-        echo "Ex: $0 /etc/rsnapshot/hosts/infra_ytria_net.conf daily"
+        echo "Ex: $0 /etc/rsnapshot/hosts/fuseki.x3rus.com.conf daily"
         exit
 fi
 
@@ -28,9 +28,7 @@ if [ ! -f ${CONFIG_FILE} ]; then
         exit 1
 fi
 
-echo ${PERIOD} | egrep 'hourly|daily|weekly|monthly' 2>&1 >/dev/null
-
-if [ $? -ne 0 ]; then
+if ! echo ${PERIOD} | egrep -q 'hourly|daily|weekly|monthly' ; then
         echo "ERROR: Bad period value. Available values are <hourly|daily|weekly|monthly>."
         exit 1
 fi
