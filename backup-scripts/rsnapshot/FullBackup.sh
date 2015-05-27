@@ -8,7 +8,7 @@
 #		Le rapport de backup est formater en HTML
 #
 #
-# Auteur  : Thomas.boutry <thomas.boutry@x3rus.com>
+# Auteur  : Thomas.boutry <xerus@x3rus.com>
 # Date    : 2013-07-07
 # Licence : GPL v3
 #

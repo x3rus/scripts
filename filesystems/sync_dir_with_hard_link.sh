@@ -6,7 +6,7 @@
 #		and must be a file system with hardlink support
 #
 #
-# Author : Thomas Boutry <thomas.boutry@x3rus.com>
+# Author : Thomas Boutry <xerus@x3rus.com>
 #
 # TODO :
 #	- add exclude tag for some directory

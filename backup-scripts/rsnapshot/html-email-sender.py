@@ -1,6 +1,6 @@
 #!/usr/bin/python2
 ##############################################################################
-#  Copyright 2010 Thomas Boutry <thomas.boutry@x3rus.com>
+#  Copyright 2010 Thomas Boutry <xerus@x3rus.com>
 #
 #
 #  html-email-send.py is free software; you can redistribute it and/or modify

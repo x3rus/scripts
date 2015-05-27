@@ -2,7 +2,7 @@
 #
 # Version 0.1
 # 
-# Autheur : Thomas Boutry <thomas.boutry@x3rus.com>
+# Autheur : Thomas Boutry <xerus@x3rus.com>
 #
 # Description :  Réalise un backup de la Base de donnée Mysql dans un répertoire donne
 # Les fichiers seront overwriter a chaque fois ce script a pour but d'etre utiliser

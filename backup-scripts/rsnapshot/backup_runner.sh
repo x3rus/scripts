@@ -4,7 +4,7 @@
 #	 	la validation de paramettre une fois le backup terminé il 
 #		affiche a l'écran le résultat du backup
 #
-# Auteur  : Thomas.boutry <thomas.boutry@x3rus.com>
+# Auteur  : Thomas.boutry <xerus@x3rus.com>
 # Date    : 2013-07-07
 # Licence : GPL v3
 # 

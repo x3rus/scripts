@@ -6,7 +6,7 @@
 #               supprimer est passable en parametre ainsi que le nombre de 
 #               fichier a ne pas compresser.
 #
-#   Auteur : Boutry Thomas <thomas.boutry@x3rus.com>
+#   Auteur : Boutry Thomas <xerus@x3rus.com>
 #   Licence : GPL v3 
 #
 ###############################################################################
