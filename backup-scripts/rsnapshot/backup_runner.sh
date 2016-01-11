@@ -61,4 +61,3 @@ rm /tmp/rsnap-out.$$
 
 exit $RSNAPSHOT_RETURN_CODE
 
-# EOF
