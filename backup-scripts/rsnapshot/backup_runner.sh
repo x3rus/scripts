@@ -51,7 +51,7 @@ if [ ! -x `which rsnapshot` ]; then
 fi
 
 # Run the the backup and redirect the output and errors on /dev/null.
-rsnapshot -c ${CONFIG_FILE} -v ${PERIOD} > /tmp/rsnap-out.$$ 2>&1
+rsnapshot -c ${CONFIG_FILE} -V ${PERIOD} > /tmp/rsnap-out.$$ 2>&1
 RSNAPSHOT_RETURN_CODE=$?
 
 cat /tmp/rsnap-out.$$  

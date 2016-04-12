@@ -178,9 +178,7 @@ for strImgName , strImgPath in dicImages.items():
 # Send the email (this example assumes SMTP authentication is required)
 import smtplib
 smtp = smtplib.SMTP()
-smtp.connect('goban.x3rus.com',587)
+smtp.connect('relay',25)
 smtp.ehlo()
-smtp.starttls()
-smtp.login('USER','PASSWORD')
 smtp.sendmail(strFrom, strTo, msgRoot.as_string())
 smtp.quit()

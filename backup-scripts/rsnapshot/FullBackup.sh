@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash 
 #
 # Description : Script qui réalise l'ensemble des backups les un à la suite des autres
 #		le script démarre donc le premier backup en prenant le fichier dans le
@@ -61,9 +61,15 @@ f_cleanup(){
 ##############
 
 if ! echo ${PERIOD} | egrep -q 'hourly|daily|weekly|monthly' ; then
-    echo "ERROR: Bad period value. Available values are <hourly|daily|weekly|monthly>."
-    f_cleanup
-    exit 1
+    
+    if date +%d | grep -q "^01$" ; then
+        # first of the month
+        PERIOD="monthly"
+    elif date +%w | grep -q "0" ; then
+        PERIOD="weekly"
+    else
+        PERIOD="daily"
+    fi
 fi
 
 echo " " >> $TMPFILE_RSYNC_REPPORT
@@ -73,6 +79,20 @@ echo "<tt><pre>" >> $TMPFILE_RSYNC_REPPORT
 
 # trap exit to run Clean up function
 trap f_cleanup SIGHUP SIGINT SIGQUIT SIGABRT SIGKILL SIGALRM SIGTERM
+
+#  Mount device
+if [ "$HD_DEV" != "" ] ; then
+    if  mount | grep -q $HD_DEV | grep -q $MOUNT_DST ; then
+        echo " WARNING , device $HD_DEV already mounted <br>" >> $TMPFILE_RSYNC_REPPORT
+    else
+        mount $HD_DEV $MOUNT_DST
+        if [ $? -ne 0 ] ; then
+            echo " <b> ERROR  unable to mount $HD_DEV </b><br> " >> $TMPFILE_RSYNC_REPPORT
+        fi
+    fi
+else
+    echo " <b> ERROR  $HD_DEV not a charactere Device  </b><br> " >> $TMPFILE_RSYNC_REPPORT
+fi
 
 # TODO Voir pour faire du parallelisme pour uptimiser le temps de backup
 # Start backup for each system listed in the $DIR_CONF_BK_FILE
@@ -127,6 +147,14 @@ if [ -f $RRDFILE ]; then
 else
     echo " ERROR: Unable to update the rrd file for the graphic, file unavelable !! <br> " >> $TMPFILE_RSYNC_REPPORT
 	
+fi
+
+#  UMount device
+if [ "$HD_DEV" != "" ] ; then
+    umount $MOUNT_DST
+    if [ $? -ne 0 ] ; then
+        echo " ERROR: Unable to umount $HD_DEV sur $MOUNT_DST <br> " >> $TMPFILE_RSYNC_REPPORT
+    fi
 fi
 
 # Feed Backup local in the FULL backup
